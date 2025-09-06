@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Summarizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .recording-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .record-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .record-button:hover {
+            background-color: #c0392b;
+        }
+
+        .record-button.recording {
+            background-color: #2ecc71;
+        }
+
+        .record-button.recording:hover {
+            background-color: #27ae60;
+        }
+
+        .status {
+            margin-top: 1rem;
+            color: #7f8c8d;
+        }
+
+        .content-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .transcription, .summary {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 5px;
+            min-height: 300px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-box {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            min-height: 200px;
+            margin-top: 1rem;
+        }
+
+        .transcribe-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .transcribe-button:hover {
+            background-color: #2980b9;
+        }
+
+        .transcribe-button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Meeting Summarizer</h1>
+        
+        <div class="recording-section">
+            <button class="record-button" id="recordButton">Start Recording</button>
+            <p class="status" id="status">Click the button to start recording</p>
+        </div>
+
+        <div class="content-section">
+            <div class="transcription">
+                <h2>
+                    Transcription
+                    <button class="transcribe-button" id="transcribeButton" disabled>Transcribe</button>
+                </h2>
+                <div class="content-box" id="transcriptionBox">
+                    Transcription will appear here...
+                </div>
+            </div>
+            
+            <div class="summary">
+                <h2>Summary</h2>
+                <div class="content-box" id="summaryBox">
+                    Summary will appear here...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const recordButton = document.getElementById('recordButton');
+        const transcribeButton = document.getElementById('transcribeButton');
+        const statusText = document.getElementById('status');
+        const transcriptionBox = document.getElementById('transcriptionBox');
+        let isRecording = false;
+
+        recordButton.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/start_recording', {
+                    method: 'POST',
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    isRecording = !isRecording;
+                    recordButton.textContent = isRecording ? 'Stop Recording' : 'Start Recording';
+                    recordButton.classList.toggle('recording');
+                    statusText.textContent = isRecording ? 'Recording in progress...' : 'Recording stopped';
+                    transcribeButton.disabled = isRecording;
+                } else {
+                    statusText.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                statusText.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        transcribeButton.addEventListener('click', async () => {
+            try {
+                transcriptionBox.textContent = 'Transcribing...';
+                const response = await fetch('/transcribe', {
+                    method: 'POST',
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    transcriptionBox.textContent = data.transcription;
+                } else {
+                    transcriptionBox.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                transcriptionBox.textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html> 

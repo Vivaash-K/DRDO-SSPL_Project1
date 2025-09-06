@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The #1 Notetaker for your meetings</title>
+    <style>
+        :root {
+            --neon: #d6ff00;
+            --dark-bg: #0a0e13;
+            --card-bg: #181d23;
+            --text-main: #fff;
+            --text-muted: #b0b0b0;
+            --accent: #00ff99;
+        }
+        body {
+            background: var(--dark-bg);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body.light-mode {
+            --neon: #7bff00;
+            --dark-bg: #f5f5f5;
+            --card-bg: #fff;
+            --text-main: #181d23;
+            --text-muted: #555;
+            --accent: #00b36b;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 4vw 1rem 4vw;
+            background: var(--dark-bg);
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--neon);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: var(--neon);
+        }
+        .sign-in-btn {
+            border: 1.5px solid var(--neon);
+            background: transparent;
+            color: var(--neon);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .sign-in-btn:hover {
+            background: var(--neon);
+            color: var(--dark-bg);
+        }
+        .toggle-mode-btn {
+            border: 1.5px solid var(--neon);
+            background: transparent;
+            color: var(--neon);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .toggle-mode-btn:hover {
+            background: var(--neon);
+            color: var(--dark-bg);
+        }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 50vh;
+            padding: 4vw 4vw 2vw 4vw;
+            background: var(--dark-bg);
+        }
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            color: var(--neon);
+            text-shadow: 0 0 10px #baff00, 0 0 20px #baff0033;
+        }
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        .timer-display {
+            font-size: 1.2rem;
+            color: var(--neon);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border-radius: 4px;
+            border: 1px solid var(--neon);
+        }
+        .overall-progress-container {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 4px;
+            margin: 2rem 0;
+            overflow: hidden;
+            padding: 0.5rem;
+            border: 1px solid var(--neon);
+        }
+        .overall-progress-bar {
+            width: 0%;
+            height: 8px;
+            background: var(--neon);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        .overall-progress-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        .cta-btn {
+            background: var(--neon);
+            color: var(--dark-bg);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #baff0088;
+            transition: background 0.2s, color 0.2s;
+        }
+        .cta-btn:hover {
+            background: var(--accent);
+            color: var(--dark-bg);
+        }
+        .features {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3vw 4vw 2vw 4vw;
+            background: var(--card-bg);
+            margin: 2rem 0;
+            border-radius: 12px;
+            box-shadow: 0 0 20px #baff0022;
+        }
+        .features-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon);
+            margin-bottom: 1.5rem;
+        }
+        .features-list {
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .main-columns {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2rem;
+            margin: 2rem 4vw;
+        }
+        .main-col {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 0 10px #baff0022;
+            padding: 2rem 1.5rem;
+            flex: 1 1 350px;
+            min-width: 300px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .main-col h2 {
+            color: var(--neon);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+        }
+        .main-col .content-box {
+            background: #22272e;
+            color: var(--text-main);
+            border-radius: 6px;
+            padding: 1rem;
+            min-height: 120px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #23282f;
+            white-space: pre-wrap;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        .main-col .action-btn {
+            background: var(--neon);
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 8px #baff0088;
+            transition: background 0.2s, color 0.2s;
+            margin-bottom: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        .main-col .action-btn:disabled {
+            background: #bdc3c7;
+            color: #444;
+            cursor: not-allowed;
+        }
+        .main-col .action-btn:hover:not(:disabled) {
+            background: var(--accent);
+            color: var(--dark-bg);
+        }
+        .status {
+            margin-top: 1rem;
+            color: #7f8c8d;
+        }
+        .newsletter {
+            background: var(--neon);
+            color: var(--dark-bg);
+            padding: 2.5rem 4vw;
+            border-radius: 12px;
+            margin: 3rem 0 2rem 0;
+            text-align: center;
+            box-shadow: 0 0 30px #baff0033;
+        }
+        .newsletter-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .newsletter-desc {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+        }
+        .newsletter-input {
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+            width: 300px;
+        }
+        .newsletter-btn {
+            background: var(--dark-bg);
+            color: var(--neon);
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .newsletter-btn:hover {
+            background: var(--accent);
+            color: var(--dark-bg);
+        }
+        .footer {
+            background: var(--card-bg);
+            color: var(--text-muted);
+            padding: 2rem 4vw 1rem 4vw;
+            border-radius: 12px 12px 0 0;
+            margin-top: 2rem;
+            font-size: 1rem;
+        }
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+        .footer-logo {
+            font-size: 1.5rem;
+            color: var(--neon);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover {
+            color: var(--neon);
+        }
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .footer-social a {
+            color: var(--neon);
+            font-size: 1.3rem;
+            text-decoration: none;
+        }
+        @media (max-width: 900px) {
+            .hero { padding: 2vw; }
+            .features, .newsletter, .footer { padding: 2vw; }
+            .footer-content { flex-direction: column; gap: 1rem; }
+            .main-columns { flex-direction: column; gap: 1.5rem; }
+        }
+        .speaker-label {
+            color: var(--neon);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .download-btn {
+            background: var(--accent);
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 8px #00ff9988;
+            transition: background 0.2s, color 0.2s;
+            margin-top: 1rem;
+            display: none;
+        }
+        .download-btn:hover {
+            background: var(--neon);
+        }
+        .wipe-btn {
+            background: #ff4444;
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 8px #ff444488;
+            transition: background 0.2s, color 0.2s;
+            margin-top: 1rem;
+            display: none;
+        }
+        .wipe-btn:hover {
+            background: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><span class="logo-icon">📝</span>Notetaker</div>
+        <button class="toggle-mode-btn" id="toggleModeBtn">🌙 Dark Mode</button>
+    </nav>
+    <section class="hero">
+        <div class="hero-title">The #1 Notetaker for your meetings.</div>
+        <div class="hero-subtitle">Transcribe, Summarize and Analyse all your voice conversations<br>Automate your meeting notes</div>
+        <div class="hero-buttons">
+            <button class="cta-btn" id="getStartedBtn">Get Started</button>
+            <div class="timer-display" id="timerDisplay">00:00</div>
+        </div>
+        <p class="status" id="status">Click the button to start recording</p>
+    </section>
+    <div class="overall-progress-container">
+        <div class="overall-progress-bar" id="overallProgressBar"></div>
+        <div class="overall-progress-label" id="overallProgressLabel">0%</div>
+    </div>
+    <div class="main-columns">
+        <div class="main-col">
+            <h2>Transcription</h2>
+            <button class="action-btn" id="transcribeButton" disabled>Transcribe</button>
+            <div class="content-box" id="transcriptionBox">
+                Transcription will appear here...
+            </div>
+        </div>
+        <div class="main-col">
+            <h2>Summary</h2>
+            <button class="action-btn" id="summarizeButton" disabled>Summarize</button>
+            <div class="content-box" id="summaryBox">
+                Summary will appear here...
+            </div>
+            <button class="download-btn" id="downloadButton">Download Document</button>
+            <button class="wipe-btn" id="wipeButton">Wipe Server Data</button>
+        </div>
+    </div>
+    <section class="features">
+        <div class="features-title">Why Choose Notetaker?</div>
+        <div class="features-list">• Accurate voice-to-text transcription</div>
+        <div class="features-list">• Instant meeting summaries</div>
+        <div class="features-list">• Actionable insights and analytics</div>
+        <div class="features-list">• Easy sharing and export</div>
+    </section>
+    <section class="newsletter">
+        <div class="newsletter-title">Meet Notetaker – Your #1 Meeting Assistant</div>
+        <div class="newsletter-desc">Tired of missing key points during meetings? Notetaker is your all-in-one solution for accurate voice-to-text transcription, instant summaries, and actionable insights. Capture every detail effortlessly, share notes with a click, and stay organized without lifting a pen. Whether it's team syncs, client calls, or brainstorming sessions — Notetaker makes every meeting count.</div>
+    </section>
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">📝 Notetaker</div>
+                <div>Transcribe, summarize, and automate your meeting notes with ease.</div>
+                <div class="footer-social">
+                    <a href="#">&#xf09a;</a>
+                    <a href="#">&#xf16d;</a>
+                    <a href="#">&#xf099;</a>
+                    <a href="#">&#xf0e1;</a>
+                </div>
+            </div>
+            <div class="footer-links" style="margin-left:auto;">
+                <strong>Company</strong>
+                <a href="https://www.drdo.gov.in/drdo/labs-and-establishments/solid-state-physics-laboratory-sspl">SSPL</a>
+                <a href="https://www.instagram.com/dpi.drdo/">Instagram</a>
+                <a href="https://www.facebook.com/DPIDRDO/">FaceBook</a>
+                <a href="https://x.com/DRDO_India">X (Formerly Twitter)</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        const transcribeButton = document.getElementById('transcribeButton');
+        const summarizeButton = document.getElementById('summarizeButton');
+        const statusText = document.getElementById('status');
+        const transcriptionBox = document.getElementById('transcriptionBox');
+        const summaryBox = document.getElementById('summaryBox');
+        const toggleModeBtn = document.getElementById('toggleModeBtn');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const overallProgressBar = document.getElementById('overallProgressBar');
+        const overallProgressLabel = document.getElementById('overallProgressLabel');
+        const downloadButton = document.getElementById('downloadButton');
+        const wipeButton = document.getElementById('wipeButton');
+        let isRecording = false;
+        let timerInterval;
+        let seconds = 0;
+        let currentProgress = 0;
+
+        function updateOverallProgress(progress, label) {
+            currentProgress = progress;
+            overallProgressBar.style.width = `${progress}%`;
+            overallProgressLabel.textContent = label;
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            seconds = 0;
+            updateTimer();
+            timerInterval = setInterval(() => {
+                seconds++;
+                updateTimer();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            seconds = 0;
+            updateTimer();
+        }
+
+        // Dark/Light mode toggle
+        toggleModeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                toggleModeBtn.textContent = '🌞 Light Mode';
+            } else {
+                toggleModeBtn.textContent = '🌙 Dark Mode';
+            }
+        });
+
+        getStartedBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/start_recording', {
+                    method: 'POST',
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    isRecording = !isRecording;
+                    getStartedBtn.textContent = isRecording ? 'Stop Recording' : 'Start Recording';
+                    getStartedBtn.classList.toggle('recording');
+                    statusText.textContent = isRecording ? 'Recording in progress...' : 'Recording stopped';
+                    transcribeButton.disabled = isRecording;
+                    summarizeButton.disabled = true;
+                    
+                    if (isRecording) {
+                        startTimer();
+                        updateOverallProgress(16.67, 'Recording in progress...');
+                    } else {
+                        stopTimer();
+                        updateOverallProgress(33.33, 'Recording completed');
+                    }
+                } else {
+                    statusText.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                statusText.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        transcribeButton.addEventListener('click', async () => {
+            try {
+                transcriptionBox.textContent = 'Transcribing...';
+                updateOverallProgress(50, 'Transcribing...');
+                
+                const response = await fetch('/transcribe', {
+                    method: 'POST',
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Format the transcription with speaker labels
+                    const formattedTranscription = data.transcription
+                        .split('\n')
+                        .map(line => {
+                            if (line.startsWith('[') && line.includes(']:')) {
+                                const [speaker, text] = line.split(']:');
+                                return `<span class="speaker-label">${speaker}]</span>${text}`;
+                            }
+                            return line;
+                        })
+                        .join('\n');
+                    
+                    transcriptionBox.innerHTML = formattedTranscription;
+                    summarizeButton.disabled = false;
+                    updateOverallProgress(66.67, 'Transcription completed');
+                } else {
+                    transcriptionBox.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                transcriptionBox.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        summarizeButton.addEventListener('click', async () => {
+            try {
+                summaryBox.textContent = 'Generating summary...';
+                updateOverallProgress(83.33, 'Generating summary...');
+                
+                const response = await fetch('/summarize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: transcriptionBox.textContent
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    summaryBox.textContent = data.summary;
+                    updateOverallProgress(100, 'Process completed');
+                    downloadButton.style.display = 'block';
+                    wipeButton.style.display = 'block';
+                } else {
+                    summaryBox.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                summaryBox.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        downloadButton.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        transcription: transcriptionBox.textContent,
+                        summary: summaryBox.textContent
+                    })
+                });
+                
+                if (response.ok) {
+                    // Create a blob from the response
+                    const blob = await response.blob();
+                    
+                    // Create a download link
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `meeting_summary_${new Date().toISOString().slice(0,19).replace(/[:]/g, '')}.docx`;
+                    
+                    // Trigger the download
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Clean up
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        wipeButton.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to delete all recordings, transcriptions, and summaries? This action cannot be undone.')) {
+                try {
+                    const response = await fetch('/wipe_data', {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        alert('All data has been successfully wiped.');
+                        // Reset the interface
+                        transcriptionBox.textContent = 'Transcription will appear here...';
+                        summaryBox.textContent = 'Summary will appear here...';
+                        downloadButton.style.display = 'none';
+                        wipeButton.style.display = 'none';
+                        updateOverallProgress(0, 'Ready to start');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
